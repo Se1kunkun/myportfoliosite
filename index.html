@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seishiro Kikuta — Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #4af;
+  --blue2: #0af;
+  --black: #0b0d12;
+  --white: #f0f4f8;
+  --gray: #141820;
+  --gray2: #1e2430;
+  --muted: #556;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --font-jp: 'Noto Sans JP', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--black); color: var(--white); font-family: var(--font-body); overflow-x: hidden; cursor: none; }
+
+/* Cursor */
+.cursor {
+  position: fixed; width: 12px; height: 12px;
+  background: var(--blue); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: width .2s, height .2s, opacity .2s;
+  mix-blend-mode: screen;
+}
+.cursor.big { width: 52px; height: 52px; opacity: .6; }
+
+/* Nav */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.5rem 3rem; z-index: 200;
+  background: rgba(11,13,18,.7); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(68,170,255,.08);
+}
+.nav-logo { font-family: var(--font-display); font-size: 1.8rem; color: var(--blue); text-decoration: none; letter-spacing: .06em; }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a { font-family: var(--font-mono); font-size: .66rem; color: var(--white); text-decoration: none; letter-spacing: .18em; text-transform: uppercase; opacity: .4; transition: opacity .2s, color .2s; }
+.nav-links a:hover { opacity: 1; color: var(--blue); }
+
+/* ── HERO ── */
+#hero {
+  height: 100vh; display: flex; flex-direction: column;
+  justify-content: flex-end; padding: 0 3rem 4rem;
+  position: relative; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  font-family: var(--font-display);
+  font-size: clamp(10rem, 26vw, 26rem);
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(68,170,255,.06);
+  white-space: nowrap; pointer-events: none; user-select: none;
+  letter-spacing: -.01em;
+}
+.hero-tag {
+  font-family: var(--font-mono); font-size: .7rem; letter-spacing: .28em;
+  color: var(--blue); text-transform: uppercase; margin-bottom: 1rem;
+  opacity: 0; animation: fadeUp .5s .1s forwards;
+}
+/* Name rendered via JS into SVG — just a container */
+.hero-name {
+  display: flex; flex-direction: column;
+  margin-bottom: 2.5rem; line-height: 1;
+  opacity: 0; animation: fadeUp .6s .3s forwards;
+}
+.name-row { display: flex; align-items: flex-end; }
+.nc {
+  display: inline-block; position: relative;
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 14vw, 15rem);
+  line-height: .92; letter-spacing: -.01em;
+  overflow: hidden;
+}
+/* Base text — white */
+.nc-base { color: var(--white); display: block; }
+.nc.ghost .nc-base { -webkit-text-stroke: 2px var(--white); color: transparent; }
+/* Blue overlay, clipped from bottom with wave */
+.nc-blue {
+  position: absolute; inset: 0;
+  color: var(--blue); display: block;
+  clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
+  will-change: clip-path;
+}
+.nc.ghost .nc-blue { -webkit-text-stroke: 2px var(--blue); color: transparent; }
+
+.hero-bottom {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  opacity: 0; animation: fadeUp .6s .55s forwards;
+}
+.hero-desc { font-family: var(--font-jp); font-size: clamp(.85rem,1.3vw,1rem); line-height: 1.8; color: rgba(240,244,248,.4); max-width: 340px; }
+.hero-desc strong { color: var(--white); }
+.hero-scroll { display: flex; align-items: center; gap: .8rem; font-family: var(--font-mono); font-size: .62rem; letter-spacing: .2em; color: rgba(240,244,248,.25); text-transform: uppercase; }
+.scroll-circle { width: 38px; height: 38px; border: 1px solid rgba(68,170,255,.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: bob 2s ease-in-out infinite; }
+@keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+
+/* Divider */
+.div { width: 100%; height: 1px; background: rgba(68,170,255,.08); }
+
+/* Sections */
+.sec { padding: 8rem 3rem; max-width: 1280px; margin: 0 auto; }
+.sec-num { font-family: var(--font-mono); font-size: .64rem; letter-spacing: .25em; color: var(--blue); display: block; margin-bottom: .8rem; }
+.sec-title { font-family: var(--font-display); font-size: clamp(3.5rem, 8vw, 8rem); line-height: .88; margin-bottom: 4rem; }
+
+/* About */
+.about-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 7rem; align-items: start; }
+.about-sticky { position: sticky; top: 8rem; }
+.about-photo { width: 100%; aspect-ratio: 3/4; background: var(--gray); display: flex; align-items: center; justify-content: center; font-size: 5rem; position: relative; margin-bottom: 1px; }
+.about-photo::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--blue); }
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(68,170,255,.08); }
+.stat-box { background: var(--black); padding: 1.1rem 1.2rem; }
+.stat-n { font-family: var(--font-display); font-size: 2.2rem; color: var(--blue); display: block; line-height: 1; }
+.stat-l { font-family: var(--font-mono); font-size: .58rem; letter-spacing: .15em; color: var(--muted); text-transform: uppercase; }
+.about-lead { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.1; margin-bottom: 2rem; }
+.about-lead .blue { color: var(--blue); }
+.about-p { font-family: var(--font-jp); font-size: .92rem; line-height: 2; color: rgba(240,244,248,.5); margin-bottom: 1rem; }
+.about-p strong { color: var(--white); }
+.chips { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 2rem; }
+.chip { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em; padding: .35rem .9rem; border: 1px solid rgba(68,170,255,.2); color: rgba(240,244,248,.4); text-transform: uppercase; transition: all .2s; }
+.chip:hover { border-color: var(--blue); color: var(--blue); }
+
+/* Goal */
+#goal { background: var(--blue2); }
+.goal-inner { max-width: 1280px; margin: 0 auto; padding: 8rem 3rem; }
+.goal-inner .sec-num { color: rgba(11,13,18,.5); }
+.goal-q { font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 6rem); line-height: 1.05; color: var(--black); margin-bottom: 3rem; }
+.goal-p { font-family: var(--font-jp); font-size: .97rem; line-height: 2; color: rgba(11,13,18,.65); max-width: 620px; }
+
+/* Skills */
+.skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(68,170,255,.08); }
+.skill-box { background: var(--black); padding: 2.5rem; transition: background .25s; }
+.skill-box:hover { background: var(--gray); }
+.skill-icon { font-size: 1.3rem; margin-bottom: 1rem; display: block; }
+.skill-name { font-family: var(--font-display); font-size: 2rem; display: block; margin-bottom: 1rem; }
+.skill-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+.stag { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .08em; padding: .28rem .7rem; background: var(--gray2); color: rgba(240,244,248,.45); transition: all .2s; }
+.stag.on { background: var(--blue); color: var(--black); font-weight: 700; }
+
+/* Works */
+.works-list { border-top: 1px solid rgba(68,170,255,.08); }
+.work-row { display: grid; grid-template-columns: 64px 1fr 1fr auto; gap: 2rem; align-items: center; padding: 2.2rem 3rem; border-bottom: 1px solid rgba(68,170,255,.08); transition: background .2s; cursor: none; }
+.work-row:hover { background: var(--gray); }
+.work-row:hover .w-title { color: var(--blue); }
+.work-row:hover .w-arrow { opacity: 1; transform: translate(0,0); }
+.w-num { font-family: var(--font-mono); font-size: .62rem; color: var(--muted); letter-spacing: .15em; }
+.w-title { font-family: var(--font-display); font-size: clamp(1.8rem, 3.5vw, 3.2rem); line-height: 1; transition: color .2s; }
+.w-meta { font-family: var(--font-mono); font-size: .63rem; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; }
+.w-tags { display: flex; gap: .4rem; flex-wrap: wrap; justify-content: flex-end; }
+.w-arrow { font-size: 1.5rem; color: var(--blue); opacity: 0; transform: translate(-8px,8px); transition: all .25s; }
+
+/* Work hover preview */
+.wprev { position: fixed; width: 260px; height: 170px; background: var(--gray); border-top: 3px solid var(--blue); display: flex; align-items: center; justify-content: center; font-size: 4rem; pointer-events: none; z-index: 500; opacity: 0; transform: scale(.88); transition: opacity .18s, transform .18s; }
+.wprev.on { opacity: 1; transform: scale(1); }
+
+/* Timeline */
+.tl-row { display: grid; grid-template-columns: 180px 1fr; gap: 3rem; padding: 2.5rem 0; border-top: 1px solid rgba(68,170,255,.08); opacity: 0; transform: translateY(18px); transition: opacity .5s, transform .5s; }
+.tl-row:last-child { border-bottom: 1px solid rgba(68,170,255,.08); }
+.tl-row.vis { opacity: 1; transform: none; }
+.tl-when { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .12em; color: var(--blue); text-transform: uppercase; padding-top: .2rem; }
+.tl-role { font-family: var(--font-display); font-size: clamp(1.5rem, 2.5vw, 2.3rem); line-height: 1.05; margin-bottom: .35rem; }
+.tl-org { font-family: var(--font-mono); font-size: .64rem; letter-spacing: .1em; color: var(--muted); margin-bottom: .7rem; }
+.tl-desc { font-family: var(--font-jp); font-size: .87rem; line-height: 1.85; color: rgba(240,244,248,.45); }
+
+/* Contact */
+#contact { background: var(--white); color: var(--black); }
+.contact-inner { max-width: 1280px; margin: 0 auto; padding: 8rem 3rem; }
+.contact-inner .sec-num { color: rgba(11,13,18,.35); }
+.contact-h { font-family: var(--font-display); font-size: clamp(5rem, 13vw, 14rem); line-height: .88; letter-spacing: -.02em; margin-bottom: 5rem; }
+.contact-h .ghost { -webkit-text-stroke: 2px var(--black); color: transparent; display: block; }
+.contact-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; }
+.clinks { display: flex; flex-direction: column; }
+.clink { display: flex; justify-content: space-between; align-items: center; padding: 1.3rem 0; border-top: 1px solid rgba(11,13,18,.12); font-family: var(--font-display); font-size: 2rem; color: var(--black); text-decoration: none; transition: padding-left .2s, color .2s; }
+.clink:last-child { border-bottom: 1px solid rgba(11,13,18,.12); }
+.clink:hover { padding-left: .6rem; color: #0af; }
+.clink .arr { transition: transform .2s; font-size: 1.1rem; }
+.clink:hover .arr { transform: translate(4px,-4px); }
+.cform { display: flex; flex-direction: column; gap: 1.1rem; }
+.fgroup { display: flex; flex-direction: column; gap: .35rem; }
+.flabel { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .2em; color: rgba(11,13,18,.38); text-transform: uppercase; }
+.finput, .ftextarea { background: transparent; border: none; border-bottom: 1px solid rgba(11,13,18,.18); color: var(--black); font-family: var(--font-body); font-size: .98rem; padding: .75rem 0; outline: none; transition: border-color .2s; resize: none; }
+.finput:focus, .ftextarea:focus { border-color: #0af; }
+.finput::placeholder, .ftextarea::placeholder { color: rgba(11,13,18,.28); }
+.ftextarea { min-height: 110px; }
+.fbtn { align-self: flex-start; font-family: var(--font-display); font-size: 1.1rem; letter-spacing: .06em; padding: .9rem 2.2rem; background: var(--black); color: var(--blue); border: none; cursor: none; transition: transform .15s, background .2s; }
+.fbtn:hover { transform: translateY(-2px); background: #0af; color: var(--black); }
+
+/* Footer */
+footer { background: var(--black); padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(68,170,255,.06); }
+.flogo { font-family: var(--font-display); font-size: 1.5rem; color: var(--blue); }
+.fcopy { font-family: var(--font-mono); font-size: .6rem; color: var(--muted); letter-spacing: .1em; }
+
+/* Reveal */
+.rev { opacity: 0; transform: translateY(24px); transition: opacity .6s, transform .6s; }
+.rev.vis { opacity: 1; transform: none; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
+
+@media(max-width:768px){
+  nav{padding:1.2rem 1.5rem;}
+  .nav-links{display:none;}
+  #hero{padding:0 1.5rem 3rem;}
+  .sec{padding:5rem 1.5rem;}
+  .goal-inner,.contact-inner{padding:5rem 1.5rem;}
+  .about-layout{grid-template-columns:1fr;gap:3rem;}
+  .about-sticky{position:static;}
+  .skill-grid{grid-template-columns:1fr;}
+  .work-row{grid-template-columns:1fr;gap:.4rem;padding:1.5rem;}
+  .w-num,.w-tags{display:none;}
+  .tl-row{grid-template-columns:1fr;gap:.4rem;}
+  .contact-layout{grid-template-columns:1fr;gap:3rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="wprev" id="wprev"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">KIKUTA</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#goal">Goal</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#works">Works</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg">KIKUTA</div>
+  <p class="hero-tag">// Student Software Engineer &amp; UI/UX Designer</p>
+  <div class="hero-name" id="heroName">
+    <div class="name-row" id="nr1"></div>
+    <div class="name-row" id="nr2"></div>
+  </div>
+  <div class="hero-bottom">
+    <p class="hero-desc"><strong>テクノロジーで新たな生活の形を。</strong><br>UIとUXを軸に、生活に馴染む<br>システムを作り続けるエンジニア。</p>
+    <div class="hero-scroll">
+      <div class="scroll-circle">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+          <path d="M6.5 1v11M1 7l5.5 5 5.5-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </div>
+      Scroll
+    </div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="sec">
+    <div class="about-layout">
+      <div class="about-sticky rev">
+        <div class="about-photo">👤</div>
+        <div class="stat-grid">
+          <div class="stat-box"><span class="stat-n">4</span><span class="stat-l">Projects</span></div>
+          <div class="stat-box"><span class="stat-n">UI</span><span class="stat-l">Focused</span></div>
+          <div class="stat-box"><span class="stat-n">Web</span><span class="stat-l">&amp; App</span></div>
+          <div class="stat-box"><span class="stat-n">∞</span><span class="stat-l">Curiosity</span></div>
+        </div>
+      </div>
+      <div>
+        <span class="sec-num rev">01 — About</span>
+        <p class="about-lead rev">生活に溶け込む<br><span class="blue">システムを</span><br>作るために。</p>
+        <p class="about-p rev">菊田 聖志朗（Seishiro Kikuta）。学生エンジニアとして、<strong>UIとUXを核に</strong>プロダクトを設計・開発しています。</p>
+        <p class="about-p rev">「動くものを作る」だけでなく、<strong>使う人の体験が自然に豊かになる</strong>ものを追求しています。技術は目的ではなく手段—コードを通じて、人々の日常をより便利に、より豊かに変えることを目指しています。</p>
+        <p class="about-p rev">学生団体のサイトから探究活動プラットフォーム、睡眠記録アプリ、学園祭会計システムまで、<strong>リアルな課題を解決するもの</strong>を作り続けています。</p>
+        <div class="chips rev">
+          <span class="chip">UI / UX</span>
+          <span class="chip">Web Dev</span>
+          <span class="chip">App Dev</span>
+          <span class="chip">Product Design</span>
+          <span class="chip">Problem Solving</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- GOAL -->
+<div id="goal">
+  <div class="goal-inner">
+    <span class="sec-num rev">02 — Goal &amp; Purpose</span>
+    <p class="goal-q rev">人々の生活を便利に、豊かにして、<br>テクノロジーで新たな<br>生活の形を創造する。</p>
+    <p class="goal-p rev">私のミッションは、テクノロジーを「特別なもの」ではなく「生活の一部」にすること。UIやUXを中心に、使い心地が自然で、日常に溶け込むシステムを作ることにこだわっています。難しい技術を難しく見せない—誰もがストレスなく使えるプロダクトこそ、本当に価値あるものだと信じています。</p>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="sec">
+    <span class="sec-num rev">03 — Skills</span>
+    <h2 class="sec-title rev">What I Do</h2>
+    <div class="skill-grid rev">
+      <div class="skill-box">
+        <span class="skill-icon">🎨</span>
+        <span class="skill-name">UI / UX Design</span>
+        <div class="skill-tags">
+          <span class="stag on">UI設計</span><span class="stag on">UXデザイン</span>
+          <span class="stag">Figma</span><span class="stag">プロトタイピング</span><span class="stag">ユーザーリサーチ</span>
+        </div>
+      </div>
+      <div class="skill-box">
+        <span class="skill-icon">⚡</span>
+        <span class="skill-name">Frontend</span>
+        <div class="skill-tags">
+          <span class="stag on">HTML / CSS</span><span class="stag on">JavaScript</span>
+          <span class="stag">React</span><span class="stag">レスポンシブ</span><span class="stag">アニメーション</span>
+        </div>
+      </div>
+      <div class="skill-box">
+        <span class="skill-icon">🔧</span>
+        <span class="skill-name">Backend / App</span>
+        <div class="skill-tags">
+          <span class="stag on">Web開発</span>
+          <span class="stag">アプリ開発</span><span class="stag">DB設計</span><span class="stag">API連携</span>
+        </div>
+      </div>
+      <div class="skill-box">
+        <span class="skill-icon">💡</span>
+        <span class="skill-name">Product</span>
+        <div class="skill-tags">
+          <span class="stag on">プロダクト企画</span>
+          <span class="stag">課題分析</span><span class="stag">チームリード</span><span class="stag">Git</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- WORKS -->
+<section id="works" style="padding:6rem 0 0;">
+  <div style="padding:0 3rem 3rem;max-width:1280px;margin:0 auto;">
+    <span class="sec-num rev">04 — Works</span>
+    <h2 class="sec-title rev">Selected<br>Projects</h2>
+  </div>
+  <div class="works-list">
+    <div class="work-row" data-e="🏫">
+      <span class="w-num">01</span>
+      <div><h3 class="w-title">MPC 公式サイト</h3><p class="w-meta">Web Design · Student Organization</p></div>
+      <div class="w-tags"><span class="chip">Web</span><span class="chip">UI/UX</span></div>
+      <span class="w-arrow">→</span>
+    </div>
+    <div class="work-row" data-e="📚">
+      <span class="w-num">02</span>
+      <div><h3 class="w-title">LiberalArts Hub</h3><p class="w-meta">Web App · Education Platform</p></div>
+      <div class="w-tags"><span class="chip">React</span><span class="chip">Firebase</span></div>
+      <span class="w-arrow">→</span>
+    </div>
+    <div class="work-row" data-e="😴">
+      <span class="w-num">03</span>
+      <div><h3 class="w-title">GrowYourself</h3><p class="w-meta">Mobile App · Health &amp; Habit</p></div>
+      <div class="w-tags"><span class="chip">App Dev</span><span class="chip">UI/UX</span></div>
+      <span class="w-arrow">→</span>
+    </div>
+    <div class="work-row" data-e="🍱">
+      <span class="w-num">04</span>
+      <div><h3 class="w-title">学園祭 会計システム</h3><p class="w-meta">Internal Tool · System Design</p></div>
+      <div class="w-tags"><span class="chip">System</span><span class="chip">Real-time</span></div>
+      <span class="w-arrow">→</span>
+    </div>
+  </div>
+</section>
+<div class="div" style="margin-top:0;"></div>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="sec">
+    <span class="sec-num rev">05 — Timeline</span>
+    <h2 class="sec-title rev">Experience</h2>
+    <div>
+      <div class="tl-row"><span class="tl-when">Now</span><div><h3 class="tl-role">Student Software Engineer</h3><p class="tl-org">// 学生エンジニアとして活動中</p><p class="tl-desc">UIとUXを軸にしたプロダクト開発を続けながら、人々の生活を豊かにする新たなシステムの構想・実装に取り組んでいる。</p></div></div>
+      <div class="tl-row"><span class="tl-when">学園祭</span><div><h3 class="tl-role">食品販売 会計システム構築</h3><p class="tl-org">// 学内プロジェクト</p><p class="tl-desc">学園祭の食品販売ブース向けに、注文・決済・在庫管理をカバーする会計システムをゼロから設計・構築。当日の現場運用を支えた。</p></div></div>
+      <div class="tl-row"><span class="tl-when">Individual</span><div><h3 class="tl-role">GrowYourself — 睡眠記録アプリ</h3><p class="tl-org">// 個人開発</p><p class="tl-desc">毎日の睡眠を記録・可視化するアプリを開発。継続しやすいシンプルなUIにこだわり、生活習慣の改善をサポートする設計を追求した。</p></div></div>
+      <div class="tl-row"><span class="tl-when">Platform</span><div><h3 class="tl-role">LiberalArts Hub — 探究活動プラットフォーム</h3><p class="tl-org">// 学内向けサービス</p><p class="tl-desc">校内の探究活動を共有・ポートフォリオ化できるWebプラットフォームを開発。生徒同士が学びを発信し合えるUXを設計した。</p></div></div>
+      <div class="tl-row"><span class="tl-when">Web</span><div><h3 class="tl-role">MPC 公式サイト制作</h3><p class="tl-org">// 学生団体 MPC</p><p class="tl-desc">所属する学生団体 MPC の公式Webサイトを企画・デザイン・実装。団体の魅力が伝わるビジュアルとわかりやすい情報設計を両立させた。</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<div id="contact">
+  <div class="contact-inner">
+    <span class="sec-num rev">06 — Contact</span>
+    <h2 class="contact-h rev">Let's<span class="ghost">Build</span></h2>
+    <div class="contact-layout">
+      <div class="rev">
+        <div class="clinks">
+          <a href="mailto:hello@kikuta.dev" class="clink"><span>Email</span><span class="arr">↗</span></a>
+          <a href="#" class="clink"><span>GitHub</span><span class="arr">↗</span></a>
+          <a href="#" class="clink"><span>Twitter / X</span><span class="arr">↗</span></a>
+          <a href="#" class="clink"><span>LinkedIn</span><span class="arr">↗</span></a>
+        </div>
+      </div>
+      <div class="cform rev" style="transition-delay:.15s">
+        <div class="fgroup"><label class="flabel">Name</label><input type="text" class="finput" placeholder="Your name"></div>
+        <div class="fgroup"><label class="flabel">Email</label><input type="email" class="finput" placeholder="hello@example.com"></div>
+        <div class="fgroup"><label class="flabel">Message</label><textarea class="ftextarea" placeholder="Tell me about your project..."></textarea></div>
+        <button class="fbtn">Send Message →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="flogo">KIKUTA</span>
+  <span class="fcopy">© 2025 Seishiro Kikuta. All rights reserved.</span>
+</footer>
+
+<script>
+// ── Cursor ──
+const cur = document.getElementById('cur');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top = e.clientY + 'px';
+});
+document.querySelectorAll('a,button,.work-row,.skill-box,.chip,.tl-row,.clink').forEach(el => {
+  el.addEventListener('mouseenter', () => cur.classList.add('big'));
+  el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+});
+
+// ── Name Water Animation ──
+// Each character: two stacked spans.
+// .nc-base = white text (always visible)
+// .nc-blue = blue text (same position, clipped from bottom via clip-path wave)
+(function() {
+  const r1 = document.getElementById('nr1');
+  const r2 = document.getElementById('nr2');
+
+  'SEISHIRO'.split('').forEach(ch => {
+    const nc = document.createElement('span');
+    nc.className = 'nc';
+    nc.innerHTML =
+      '<span class="nc-base">' + ch + '</span>' +
+      '<span class="nc-blue" aria-hidden="true">' + ch + '</span>';
+    r1.appendChild(nc);
+  });
+
+  'KIKUTA'.split('').forEach(ch => {
+    const nc = document.createElement('span');
+    nc.className = 'nc ghost';
+    nc.innerHTML =
+      '<span class="nc-base">' + ch + '</span>' +
+      '<span class="nc-blue" aria-hidden="true">' + ch + '</span>';
+    r2.appendChild(nc);
+  });
+
+  const all = [...document.querySelectorAll('.nc')];
+  const N = all.length;
+  const lvl = new Float32Array(N);  // 0..1 fill level
+  const vel = new Float32Array(N);
+  const SPRING = 0.12, DAMP = 0.65, TENS = 0.16;
+  let mx = -9999, my = -9999;
+  const hero = document.getElementById('hero');
+
+  hero.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  hero.addEventListener('mouseleave', () => { mx = -9999; my = -9999; });
+
+  function tick() {
+    // hit detection → splash
+    all.forEach((el, i) => {
+      const r = el.getBoundingClientRect();
+      if (mx >= r.left && mx <= r.right && my >= r.top && my <= r.bottom) {
+        vel[i] += (1 - lvl[i]) * 0.45;
+      }
+    });
+
+    // spring physics + neighbour wave propagation
+    for (let i = 0; i < N; i++) {
+      let acc = -SPRING * lvl[i];
+      if (i > 0 && all[i-1].parentElement === all[i].parentElement)
+        acc += TENS * (lvl[i-1] - lvl[i]);
+      if (i < N-1 && all[i+1].parentElement === all[i].parentElement)
+        acc += TENS * (lvl[i+1] - lvl[i]);
+      vel[i] = vel[i] * DAMP + acc;
+      lvl[i] = Math.max(0, Math.min(1, lvl[i] + vel[i]));
+    }
+
+    // render: update clip-path on .nc-blue
+    const t = performance.now() / 700;
+    all.forEach((el, i) => {
+      const lv = lvl[i];
+      const blue = el.querySelector('.nc-blue');
+      if (lv < 0.002) {
+        blue.style.clipPath = 'polygon(0% 100%,100% 100%,100% 100%,0% 100%)';
+        return;
+      }
+      // wave amplitude peaks at 50% fill
+      const amp = lv * (1 - lv) * 28;
+      const phase = i * 1.25 + t;
+      // top-left and top-right Y positions as % of element height
+      const tl = (1 - lv) * 100 - Math.sin(phase)        * amp / (el.offsetHeight || 120) * 100;
+      const tr = (1 - lv) * 100 - Math.sin(phase + 1.6)  * amp / (el.offsetHeight || 120) * 100 * 0.6;
+      const tm = (1 - lv) * 100 - Math.sin(phase + 0.8)  * amp / (el.offsetHeight || 120) * 100 * 1.2;
+      // 5-point polygon for a rounder wave top
+      blue.style.clipPath =
+        `polygon(0% ${tl.toFixed(2)}%, 25% ${tm.toFixed(2)}%, 50% ${((tl+tr)/2).toFixed(2)}%, 75% ${tm.toFixed(2)}%, 100% ${tr.toFixed(2)}%, 100% 100%, 0% 100%)`;
+    });
+
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+// ── Work hover preview ──
+const wprev = document.getElementById('wprev');
+document.querySelectorAll('.work-row').forEach(row => {
+  row.addEventListener('mouseenter', () => { wprev.textContent = row.dataset.e; wprev.classList.add('on'); });
+  row.addEventListener('mousemove', e => { wprev.style.left=(e.clientX+20)+'px'; wprev.style.top=(e.clientY-85)+'px'; });
+  row.addEventListener('mouseleave', () => wprev.classList.remove('on'));
+});
+
+// ── Scroll reveal ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.rev, .tl-row').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
